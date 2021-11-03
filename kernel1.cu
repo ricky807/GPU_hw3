@@ -29,6 +29,8 @@ __global__ void k1( float* g_dataA, float* g_dataB, int floatpitch, int width)
     {
         
         s_data[shared_i_index-1 * blocksize + shared_j_index] = g_dataA[i-1 * floatpitch + j];
+        printf("%04.2f ", s_data[shared_i_index-1 * blocksize + shared_j_index]);
+        /*
         s_data[shared_i_index * blocksize + shared_j_index] = g_dataA[i * floatpitch + j];
         s_data[shared_i_index+1 * blocksize + shared_j_index] = g_dataA[i+1 * floatpitch + j];
         
@@ -44,10 +46,11 @@ __global__ void k1( float* g_dataA, float* g_dataB, int floatpitch, int width)
             s_data[shared_i_index * blocksize + shared_j_index+1] = g_dataA[i+1 * floatpitch + j+1];
             s_data[shared_i_index+1 * blocksize + shared_j_index+1] = g_dataA[i+2 * floatpitch + j+1];
         }
-        
+        */
     }
-
+    /*
     __syncthreads();
+
     if( i >= width - 1|| j >= width - 1 || i < 1 || j < 1 ) return;
     
     g_dataB[i * floatpitch + j] = (
@@ -62,6 +65,6 @@ __global__ void k1( float* g_dataA, float* g_dataB, int floatpitch, int width)
                                 0.1f * s_data[(i-1) * blocksize + (j-1)]         //NW
                             ) * 0.95f;
     
-    
+    */
 }
 
