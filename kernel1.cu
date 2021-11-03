@@ -20,7 +20,7 @@ __global__ void k1( float* g_dataA, float* g_dataB, int floatpitch, int width)
   
     // global thread(data) column index
     unsigned int j = blockIdx.x * blockDim.x + threadIdx.x;
-    unsigned int blocksize = blockIdx.x;
+    unsigned int blocksize = blockIdx.x + 2;
     j = j + 1;
 
     int shared_i_index = threadIdx.y;
