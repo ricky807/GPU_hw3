@@ -122,9 +122,14 @@ void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes,
    
    int gridWidth = (int) ceil( (width - 2) / (float) blockWidth);
    int gridHeight = (int) ceil( (height - 2) / (float) blockHeight);
+   printf("BlockWidth: %d\n", blockWidth);
+   printf("BlockHeight: %d\n", blockHeight);
+   printf("GridWidth: %d\n", gridWidth);
+   printf("GridHeight: %d\n", gridHeight);
    
    // number of blocks required to process all the data.
    int numBlocks =   gridWidth * gridHeight;
+   printf("numBlocks: %d\n", numBlocks);
    
    // Each block gets a shared memory region of this size.
    unsigned int shared_mem_size = ((blockWidth + 2) * 4) * sizeof(float); 
@@ -132,6 +137,7 @@ void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes,
    printf("blockDim.x=%d blockDim.y=%d    grid = %d x %d\n", blockWidth, blockHeight, gridWidth, gridHeight);
    printf("numBlocks = %d,  threadsPerBlock = %d   shared_mem_size = %d\n", numBlocks, threadsPerBlock,  shared_mem_size);
    
+   printf("Check 1\n");
    if(gridWidth > 65536 || gridHeight > 65536) {
       fprintf(stderr, "****Error: a block dimension is too large.\n");
    }
@@ -143,6 +149,7 @@ void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes,
    if(shared_mem_size > 49152) {
       fprintf(stderr, "****Error: shared memory per block is too large.\n");
    }
+   printf("Check 2\n");
       
    // Format the grid, which is a collection of blocks. 
    dim3  grid( gridWidth, gridHeight, 1);
@@ -155,14 +162,14 @@ void runCUDA( float *h_dataA, float* h_dataB, int width, int height, int passes,
    StopWatchInterface *timer = NULL;
    sdkCreateTimer(&timer);
    sdkStartTimer(&timer);
-     
    float * temp;
+   printf("Pitch: %zu\n", pitch);
+   
    for(int r=0; r<passes; r++){ 
       //execute the kernel
-      k1 <<< grid, threads, shared_mem_size >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
-      
+      // k1 <<< grid, threads, shared_mem_size >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
       //uncomment the following line to use k0, the simple kernel, provived in kernel.cu           
-      //k0 <<< grid, threads >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
+      k0 <<< grid, threads >>>( d_dataA, d_dataB, pitch/sizeof(float), width);
 
       // swap the device data pointers  
       temp    = d_dataA;
