@@ -16,20 +16,21 @@ __global__ void k1( float* g_dataA, float* g_dataB, int floatpitch, int width)
 
     // global thread(data) row index 
     unsigned int i = blockIdx.y * blockDim.y + threadIdx.y;
-    i = i + 1;
+    i ++;
   
     // global thread(data) column index
     unsigned int j = blockIdx.x * blockDim.x + threadIdx.x;
-    unsigned int blocksize = blockIdx.x + 2;
-    j = j + 1;
+    j ++;
 
-    int shared_i_index = threadIdx.y;
-    int shared_j_index = threadIdx.x;
-    if(!(i >= width - 1|| j >= width - 1 || i < 1 || j < 1))
+    unsigned int blocksize = blockDim.x + 2;
+
+    int shared_i_index = threadIdx.y + 1;
+    int shared_j_index = threadIdx.x + 1;
+    if(i < width - 1|| j < width - 1 || i >= 1 || j >= 1)
     {
         
-        s_data[shared_i_index-1 * blocksize + shared_j_index] = g_dataA[i-1 * floatpitch + j];
-        printf("%04.2f ", s_data[shared_i_index-1 * blocksize + shared_j_index]);
+        //s_data[shared_i_index-1 * blocksize + shared_j_index] = g_dataA[i-1 * floatpitch + j];
+        printf("%d ", g_dataA[i-1 * floatpitch + j]);
         /*
         s_data[shared_i_index * blocksize + shared_j_index] = g_dataA[i * floatpitch + j];
         s_data[shared_i_index+1 * blocksize + shared_j_index] = g_dataA[i+1 * floatpitch + j];
